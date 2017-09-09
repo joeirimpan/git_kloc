@@ -18,7 +18,8 @@ setuptools.setup(
     author="Joe Paul",
     author_email="joeirimpan@gmail.com",
 
-    description="A simple flask application to display how much a user contributed to a repository",
+    description="A simple flask application to display"
+    "how much a user contributed to an organisation",
     long_description=open('README.md').read(),
 
     packages=setuptools.find_packages(),
