@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 
-class VCS extends React.Componet {
+class VCS extends React.Component {
   render() {
     return (
       <div class="vcs">
