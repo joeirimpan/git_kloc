@@ -14,5 +14,6 @@ Some basic conventions for contributing to this project.
 
 ### Commit Message Format
 
-[Closes #123][#124][#125] Torpedoes now sufficiently powered
 [<optional state> #issueid] (50 chars or less) summary of changes
+for eg:
+[Closes #123][#124][#125] Torpedoes now sufficiently powered
