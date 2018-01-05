@@ -6,8 +6,16 @@
     :license: see LICENSE for details.
 """
 import os
-from flask import request, session, Blueprint, render_template, jsonify
+from flask import (
+    request, session, Blueprint, render_template, jsonify,
+    url_for, redirect
+)
+from flask_login import login_user, logout_user, current_user
 from requests_oauthlib import OAuth2Session
+
+from .models import User
+
+from ..extensions import login_manager
 
 
 blueprint = Blueprint(
@@ -17,11 +25,25 @@ blueprint = Blueprint(
 GITHUB_OAUTH_URL = 'https://github.com/login/oauth/%s'
 
 
+@login_manager.user_loader
+def user_loader(user_id):
+    if 'token' not in session:
+        return
+    return User(token=session['token'])
+
+
 @blueprint.route('/')
 def index():
     """Home page
     """
     return render_template('index.html')
+
+
+@blueprint.route('/is_logged_in')
+def is_logged_in():
+    return jsonify(
+        isLoggedIn=current_user.is_authenticated
+    )
 
 
 @blueprint.route('/login')
@@ -49,5 +71,18 @@ def authorize():
         client_secret=os.environ['CLIENT_SECRET'],
         authorization_response=request.url
     )
+    github.token = token
+    user = User(token=token)
     session['token'] = token
-    return jsonify(github.get('https://api.github.com/user').json())
+    login_user(user)
+    next_url = request.args.get('next') or url_for('user.index')
+    return redirect(next_url)
+
+
+@blueprint.route('/logout')
+def logout():
+    """Logout handler
+    """
+    session.clear()
+    logout_user()
+    return redirect(url_for('user.index'))

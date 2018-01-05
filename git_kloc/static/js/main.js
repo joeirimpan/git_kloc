@@ -9653,9 +9653,9 @@ var LoginView = function (_React$Component) {
         _react2.default.createElement(
           'button',
           {
-            'class': 'btn btn-primary',
+            className: 'btn btn-primary',
             onClick: this.handleLoginButton },
-          'Login'
+          'Login via github'
         )
       );
     }
@@ -9664,7 +9664,121 @@ var LoginView = function (_React$Component) {
   return LoginView;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(LoginView, null), document.getElementById('git-kloc'));
+var Repository = function (_React$Component2) {
+  _inherits(Repository, _React$Component2);
+
+  function Repository() {
+    _classCallCheck(this, Repository);
+
+    return _possibleConstructorReturn(this, (Repository.__proto__ || Object.getPrototypeOf(Repository)).apply(this, arguments));
+  }
+
+  _createClass(Repository, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'li',
+        { className: 'list-group-item' },
+        this.props.repo
+      );
+    }
+  }]);
+
+  return Repository;
+}(_react2.default.Component);
+
+var Repositories = function (_React$Component3) {
+  _inherits(Repositories, _React$Component3);
+
+  function Repositories(props) {
+    _classCallCheck(this, Repositories);
+
+    var _this3 = _possibleConstructorReturn(this, (Repositories.__proto__ || Object.getPrototypeOf(Repositories)).call(this, props));
+
+    _this3.state = {
+      'repositories': []
+    };
+    return _this3;
+  }
+
+  _createClass(Repositories, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this4 = this;
+
+      fetch('/repositories.json', { credentials: 'include' }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        if (data.repos) {
+          _this4.setState({ 'repositories': data.repos });
+        }
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var repos = this.state.repositories.map(function (repo, index) {
+        return _react2.default.createElement(Repository, { key: index, repo: repo });
+      });
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'ul',
+          { className: 'list-group' },
+          ' ',
+          repos,
+          ' '
+        )
+      );
+    }
+  }]);
+
+  return Repositories;
+}(_react2.default.Component);
+
+var MainComponent = function (_React$Component4) {
+  _inherits(MainComponent, _React$Component4);
+
+  function MainComponent(props) {
+    _classCallCheck(this, MainComponent);
+
+    var _this5 = _possibleConstructorReturn(this, (MainComponent.__proto__ || Object.getPrototypeOf(MainComponent)).call(this, props));
+
+    _this5.state = {
+      'isLoggedIn': false,
+      'context': ''
+    };
+    return _this5;
+  }
+
+  _createClass(MainComponent, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this6 = this;
+
+      fetch('/is_logged_in', { credentials: 'include' }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        _this6.setState({ 'isLoggedIn': data.isLoggedIn });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var isLoggedIn = this.state.isLoggedIn;
+      if (isLoggedIn) {
+        return _react2.default.createElement(Repositories, null);
+      } else {
+        return _react2.default.createElement(LoginView, null);
+      }
+    }
+  }]);
+
+  return MainComponent;
+}(_react2.default.Component);
+
+_reactDom2.default.render(_react2.default.createElement(MainComponent, null), document.getElementById('git-kloc'));
 
 /***/ }),
 /* 83 */
