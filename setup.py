@@ -5,7 +5,9 @@ import setuptools
 requirements = [
     'Flask',
     'Flask-WTF',
-    'wtforms-components'
+    'Flask-Login',
+    'wtforms-components',
+    'PyGithub'
 ]
 
 test_requirements = ['flake8']

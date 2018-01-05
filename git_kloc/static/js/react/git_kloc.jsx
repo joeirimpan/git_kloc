@@ -25,17 +25,90 @@ class LoginView extends React.Component {
     return (
       <div>
         <button
-          class="btn btn-primary"
+          className="btn btn-primary"
           onClick={this.handleLoginButton}>
-          Login
+          Login via github
         </button>
       </div>
     )
   }
 }
 
+class Repository extends React.Component {
+  render() {
+    return (
+      <li className="list-group-item">
+        {this.props.repo}
+      </li>
+    )
+  }
+}
+
+class Repositories extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      'repositories': []
+    }
+  }
+  componentDidMount() {
+    fetch(
+      '/repositories.json',
+      {credentials: 'include'}
+    )
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      if (data.repos) {
+        this.setState({'repositories': data.repos});
+      }
+    });
+  }
+  render() {
+    var repos = this.state.repositories.map((repo, index) => {
+      return (<Repository key={index} repo={repo} />);
+    });
+    return (
+      <div><ul className="list-group"> {repos} </ul></div>
+    )
+  }
+}
+
+class MainComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      'isLoggedIn': false,
+      'context': ''
+    }
+  }
+
+  componentDidMount() {
+    fetch(
+      '/is_logged_in',
+      {credentials: 'include'}
+    )
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      this.setState({'isLoggedIn': data.isLoggedIn});
+    });
+  }
+
+  render() {
+    const isLoggedIn = this.state.isLoggedIn;
+    if (isLoggedIn) {
+      return (<Repositories />)
+    } else {
+      return (<LoginView />)
+    }
+  }
+}
+
 
 ReactDOM.render(
-  <LoginView />,
+  <MainComponent />,
   document.getElementById('git-kloc')
 );

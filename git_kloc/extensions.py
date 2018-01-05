@@ -6,6 +6,8 @@
     :license: see LICENSE for details.
 """
 from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager
 
 
 csrf_protect = CSRFProtect()
+login_manager = LoginManager()
